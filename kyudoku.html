@@ -153,9 +153,12 @@
 
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
-      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) ==> click1(X,Y) & ~click3(X,Y)
-      click(cell(X,Y)) & click1(X,Y) ==> click2(X,Y) & ~click1(X,Y)
-      click(cell(X,Y)) & click2(X,Y) ==> click3(X,Y) & ~click2(X,Y)
+      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(X, 6) ==> click1(X,Y) & ~click3(X,Y)
+      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(Y, 4) ==> click1(X,Y) & ~click3(X,Y)
+      click(cell(X,Y)) & click1(X,Y) & distinct(X, 6) ==> click2(X,Y) & ~click1(X,Y)
+      click(cell(X,Y)) & click1(X,Y) & distinct(Y, 4) ==> click2(X,Y) & ~click1(X,Y)
+      click(cell(X,Y)) & click2(X,Y) & distinct(X, 6) ==> click3(X,Y) & ~click2(X,Y)
+      click(cell(X,Y)) & click2(X,Y) & distinct(Y, 4) ==> click3(X,Y) & ~click2(X,Y)
 
       style(cell(X,Y), background, red) :- click1(X,Y)
       style(cell(X,Y), color, red) :- click1(X,Y)
@@ -165,9 +168,9 @@
 
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
 
-      style(nineselected, color, green) :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
+      nine :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
 
-      style(unique, color, green) :- evaluate(length(setofall(cell(X,Y), click2(X,Y))), 9)
+      unique :- same(length(setofall(W, click2(X,Y,W))), countofall(cell(X, Y), click2(X,Y,W)))
 
       row1 :- evaluate(max(sum(setofall(W, square(1, Y, W) & click2(1,Y))),9), 9)
       row2 :- evaluate(max(sum(setofall(W, square(2, Y, W) & click2(2,Y))),9), 9)
@@ -190,8 +193,12 @@
       style(lessthan9row, color, red) :- ~allrows
       style(lessthan9col, color, green) :- allcols
       style(lessthan9col, color, red) :- ~allcols
+      style(unique, color, green) :- nine
+      style(unique, color, red) :- ~nine
+      style(unique, color, green) :- unique
+      style(unique, color, red) :- ~unique
 
-      style(winner, visibility, visible) :- allrows & allcols & evaluate(countofall(cell(X,Y), click2(X,Y)), 9) & evaluate(length(setofall(cell(X,Y), click2(X,Y))), 9)
+      style(winner, visibility, visible) :- allrows & allcols & nine & unique
       
     </textarea>
 
