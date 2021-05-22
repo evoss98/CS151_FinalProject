@@ -195,8 +195,9 @@
       style(lessthan9col, color, green) :- allcols
       style(lessthan9col, color, red) :- ~allcols
 
-
-      style(winner, visibility, visible) :- allrows & allcols & ninetotal & allunique
+      allsatisfied :- allrows & allcols & ninetotal & allunique
+      style(winner, visibility, visible) :- allsatisfied
+      style(winner, visibility, hidden) :- ~allsatisfied
       
     </textarea>
 
