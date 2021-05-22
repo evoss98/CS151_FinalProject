@@ -166,7 +166,7 @@
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
 
       ninetotal :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
-      allunique :- evaluate(length(setofall(W, square(X,Y,W) & click2(X,Y))), 9)
+      allunique :- evaluate(length(setofall(W, square(X,Y,W) & click2(X, Y))), R1) & evaluate(countofall(cell(X, Y), click2(X,Y)), R2) & same(R1, R2)
 
       style(nineselected, color, green) :- ninetotal
       style(nineselected, color, red) :- ~ninetotal
