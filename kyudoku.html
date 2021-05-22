@@ -168,9 +168,9 @@
 
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
 
-      nine :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
+      nineselected :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
 
-      unique :- same(length(setofall(W, square(X,Y,W) & click(X, Y))), countofall(cell(X, Y), click2(X,Y,W)))
+      unique :- same(length(setofall(W, square(X,Y,W) & click2(X, Y))), countofall(cell(X, Y), click2(X,Y,W)))
 
       row1 :- evaluate(max(sum(setofall(W, square(1, Y, W) & click2(1,Y))),9), 9)
       row2 :- evaluate(max(sum(setofall(W, square(2, Y, W) & click2(2,Y))),9), 9)
@@ -193,12 +193,12 @@
       style(lessthan9row, color, red) :- ~allrows
       style(lessthan9col, color, green) :- allcols
       style(lessthan9col, color, red) :- ~allcols
-      style(nine, color, green) :- nine
-      style(nine, color, red) :- ~nine
+      style(nine, color, green) :- nineselected
+      style(nine, color, red) :- ~nineselected
       style(unique, color, green) :- unique
       style(unique, color, red) :- ~unique
 
-      style(winner, visibility, visible) :- allrows & allcols & nine & unique
+      style(winner, visibility, visible) :- allrows & allcols & nineselected & unique
       
     </textarea>
 
