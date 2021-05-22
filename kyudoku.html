@@ -153,12 +153,9 @@
 
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
-      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(X, 6) ==> click1(X,Y) & ~click3(X,Y)
-      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(Y, 4) ==> click1(X,Y) & ~click3(X,Y)
-      click(cell(X,Y)) & click1(X,Y) & distinct(X, 6) ==> click2(X,Y) & ~click1(X,Y)
-      click(cell(X,Y)) & click1(X,Y) & distinct(Y, 4) ==> click2(X,Y) & ~click1(X,Y)
-      click(cell(X,Y)) & click2(X,Y) & distinct(X, 6) ==> click3(X,Y) & ~click2(X,Y)
-      click(cell(X,Y)) & click2(X,Y) & distinct(Y, 4) ==> click3(X,Y) & ~click2(X,Y)
+      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(cell(X,Y), cell(6,4))==> click1(X,Y) & ~click3(X,Y)
+      click(cell(X,Y)) & click1(X,Y) & distinct(cell(X,Y), cell(6,4)) ==> click2(X,Y) & ~click1(X,Y)
+      click(cell(X,Y)) & click2(X,Y) & distinct(cell(X,Y), cell(6,4)) ==> click3(X,Y) & ~click2(X,Y)
 
       style(cell(X,Y), background, red) :- click1(X,Y)
       style(cell(X,Y), color, red) :- click1(X,Y)
@@ -168,9 +165,13 @@
 
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
 
-      nineselected :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
+      ninetotal :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
+      allunique :- evaluate(length(setofall(W, square(X,Y,W) & click2(X,Y))), 9)
 
-      unique :- same(length(setofall(W, square(X,Y,W) & click2(X, Y))), countofall(cell(X, Y), click2(X,Y,W)))
+      style(nineselected, color, green) :- ninetotal
+      style(nineselected, color, red) :- ~ninetotal
+      style(unique, color, green) :- allunique
+      style(unique, color, red) :- ~allunique
 
       row1 :- evaluate(max(sum(setofall(W, square(1, Y, W) & click2(1,Y))),9), 9)
       row2 :- evaluate(max(sum(setofall(W, square(2, Y, W) & click2(2,Y))),9), 9)
@@ -198,7 +199,7 @@
       style(unique, color, green) :- unique
       style(unique, color, red) :- ~unique
 
-      style(winner, visibility, visible) :- allrows & allcols & nineselected & unique
+      style(winner, visibility, visible) :- allrows & allcols & ninetotal & allunique
       
     </textarea>
 
