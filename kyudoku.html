@@ -196,8 +196,8 @@
       style(lessthan9col, color, red) :- ~allcols
       style(nine, color, green) :- nineselected
       style(nine, color, red) :- ~nineselected
-      style(unique, color, green) :- unique
-      style(unique, color, red) :- ~unique
+      style(unique, color, green) :- allunique
+      style(unique, color, red) :- ~allunique
 
       style(winner, visibility, visible) :- allrows & allcols & ninetotal & allunique
       
