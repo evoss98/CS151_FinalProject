@@ -151,6 +151,16 @@
       square(6,5,3)
       square(6,6,8)
 
+      correct(6,4,1)
+      correct(1,6,2)
+      correct(6,5,3)
+      correct(3,4,4)
+      correct(3,5,5)
+      correct(1,2,6)
+      correct(2,6,7)
+      correct(4,3,8)
+      correct(5,1,9)
+
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
       click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(cell(X,Y), cell(6,4))==> click1(X,Y) & ~click3(X,Y)
@@ -188,7 +198,40 @@
       allsatisfied :- allrows & allcols & ninetotal & allunique
       style(winner, visibility, visible) :- allsatisfied
       style(winner, visibility, hidden) :- ~allsatisfied
-      
+
+      identified(X, Y, Z) :- click2(X, Y) & correct(X, Y, Z)
+      clicked(Z) :- square(X, Y, Z) & click2(X, Y)
+
+      currRowSum(R, S) :- evaluate(sum(setofall(N, identified(R, Y, N))), S)
+      currColSum(C, S) :- evaluate(sum(setofall(N, identified(X, C, N))), S)
+
+      unavailable(X, Y, Z) :- square(X, Y, Z) & currRowSum(X, S) & evaluate(min(plus(S, Z), 10), 10)
+      unavailable(X, Y, Z) :- square(X, Y, Z) & currColSum(Y, S) & evaluate(min(plus(S, Z), 10), 10)
+      available(X, Y, Z) :- square(X, Y, Z) & ~clicked(Z) & ~unavailable(X, Y, Z)
+
+      hintAvailable(X, Y, Z) :- square(X, Y, Z) & available(X, Y, Z) & evaluate(countofall(cell(OX, OY), available(OX, OY, Z)), 1)
+
+      nextHint(X, Y, Z) :- hintAvailable(X, Y, Z) & evaluate(countofall(Q, hintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
+      easyHint :- nextHint(X, Y, Z)
+
+      canBeInRow(R, N) :- available(R, Y, N)
+      canBeInCol(C, N) :- available(X, C, N)
+      forcedRow(R, N) :- canBeInRow(R, N) & evaluate(countofall(OR, canBeInRow(OR, N)), 1)
+      forcedCol(R, N) :- canBeInCol(C, N) & evaluate(countofall(OC, canBeInCol(OC, N)), 1)
+
+      forcedRowSum(R, S) :- evaluate(sum(setofall(N, forcedRow(R,N))), S)
+      forcedColSum(C, S) :- evaluate(sum(setofall(N, forcedCol(C,N))), S)
+      totalRowSum(R, S) :- currRowSum(R, OS) & forcedRowSum(R, SS) & evaluate(plus(OS, SS), S)
+      totalColSum(C, S) :- currColSum(C, OS) & forcedColSum(R, SS) & evaluate(plus(OS, SS), S)
+      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalRowSum(X, S) & evaluate(min(plus(S, Z), 10), 10)
+      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & currColSum(Y, S) & evaluate(min(plus(S, Z), 10), 10)
+
+      stillAvailable(X, Y, Z) :- available(X, Y, Z) & ~forcedUnavailable(X, Y, Z)
+
+      hardHintAvailable(X, Y, Z) :- square(X, Y, Z) & stillAvailable(X, Y, Z) & evaluate(countofall(cell(OX, OY), stillAvailable(OX, OY, Z)), 1)
+
+      hardHint(X, Y, Z) :- ~easyHint & hardHintAvailable(X, Y, Z) & evaluate(countofall(Q, hardHintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
+
     </textarea>
 
   </body>
