@@ -223,14 +223,22 @@
       forcedColSum(C, S) :- evaluate(sum(setofall(N, forcedCol(C,N))), S)
       totalRowSum(R, S) :- currRowSum(R, OS) & forcedRowSum(R, SS) & evaluate(plus(OS, SS), S)
       totalColSum(C, S) :- currColSum(C, OS) & forcedColSum(R, SS) & evaluate(plus(OS, SS), S)
-      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalRowSum(X, S) & evaluate(min(plus(S, Z), 10), 10)
-      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & currColSum(Y, S) & evaluate(min(plus(S, Z), 10), 10)
+      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalRowSum(X, S) & ~forcedRow(X, Z) & evaluate(min(plus(S, Z), 10), 10)
+      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalColSum(Y, S) & ~forcedCol(Y, Z) & evaluate(min(plus(S, Z), 10), 10)
 
-      stillAvailable(X, Y, Z) :- available(X, Y, Z) & ~forcedUnavailable(X, Y, Z)
+      available2(X, Y, Z) :- available(X, Y, Z) & ~forcedUnavailable(X, Y, Z)
 
-      hardHintAvailable(X, Y, Z) :- square(X, Y, Z) & stillAvailable(X, Y, Z) & evaluate(countofall(cell(OX, OY), stillAvailable(OX, OY, Z)), 1)
+      hardHintAvailable(X, Y, Z) :- square(X, Y, Z) & available2(X, Y, Z) & evaluate(countofall(cell(OX, OY), available2(OX, OY, Z)), 1)
 
       hardHint(X, Y, Z) :- ~easyHint & hardHintAvailable(X, Y, Z) & evaluate(countofall(Q, hardHintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
+      hardHint :- easyHint
+      hardHint :- hardHint(X, Y, Z)
+
+      notClobbered(N, X, Y) :- available2(OX, OY, N) & distinct(OX, X) & distinct(OY, Y)
+      clobbered(N, X, Y) :- square(X, Y, W) & distinct(N, W) &  ~notClobbered(N, X, Y)
+      clobberedUnavailable(X, Y, Z) :- square(X, Y, Z) & clobbered(N, X, Y) & evaluate(min(plus(N, Z), 10), 10)
+
+      available3(X, Y, Z) :- available2(X, Y, Z) & ~clobberedUnavailable(X, Y, Z)
 
     </textarea>
 
