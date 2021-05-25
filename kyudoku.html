@@ -119,7 +119,7 @@
       <h1 id=winner style='visibility:hidden' >You found a winning solution!</h1>
     </div>
     <textarea id='lambda' type='text/hrf' style='display:none'>
-      click2(6,4)
+      given(6,4,easy)
       squarelevel(1,1,1,easy)
       squarelevel(1,2,6,easy)
       squarelevel(1,3,5,easy)
@@ -220,9 +220,9 @@
       style(cell(X,Y), color, black) :- click2(X,Y)
       style(cell(X,Y), background, white) :- click3(X,Y)
 
-      click(easy) ==> version(easy) & ~version(medium) & ~version(hard)
-      click(medium) ==> version(medium) & ~version(easy) & ~version(hard)
-      click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
+      click(easy) :: version(easy) & ~version(medium) & ~version(hard)
+      click(medium) :: version(medium) & ~version(easy) & ~version(hard)
+      click(hard) ::fk. version(hard) & ~version(easy) & ~version(medium)
       
       square(X, Y, W) :- squarelevel(X, Y, W, Z) & version(Z)
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
