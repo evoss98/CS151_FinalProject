@@ -274,8 +274,6 @@
       click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
       click(hard) & click2(X,Y) ==> version(hard) & ~version(easy) & ~version(medium) & ~click2(X,Y) & click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
       click(hard) & fixed(X,Y) ==> version(hard) & ~version(easy) & ~version(medium) & ~click2(X,Y) & click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
-
-
       
       style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
