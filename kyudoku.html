@@ -195,15 +195,15 @@
       squarelevel(6,5,8,medium)
       squarelevel(6,6,4,medium)
 
-      correct(6,4,1, easy)
-      correct(1,6,2, easy)
-      correct(6,5,3, easy)
-      correct(3,4,4, easy)
-      correct(3,5,5, easy)
-      correct(1,2,6, easy)
-      correct(2,6,7, easy)
-      correct(4,3,8, easy)
-      correct(5,1,9, easy)
+      correctlevel(6,4,1, easy)
+      correctlevel(1,6,2, easy)
+      correctlevel(6,5,3, easy)
+      correctlevel(3,4,4, easy)
+      correctlevel(3,5,5, easy)
+      correctlevel(1,2,6, easy)
+      correctlevel(2,6,7, easy)
+      correctlevel(4,3,8, easy)
+      correctlevel(5,1,9, easy)
 
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
@@ -228,6 +228,7 @@
       click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
       
       square(X, Y, W) :- squarelevel(X, Y, W, Z) & version(Z)
+      correct(X, Y, W) :- correctlevel(X, Y, W, Z) & version(Z)
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
 
       ninetotal :- evaluate(countofall(cell(X,Y), chosen(X,Y)), 9)
