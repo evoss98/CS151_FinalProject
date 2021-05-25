@@ -102,6 +102,12 @@
           <td id="cell(6,6)" onclick='modbutton(this)'>&nbsp;</td>
         </tr>
       </table>
+      
+      <div style='display: flex; flex-direction: row; margin: 10px;'>
+        <button id='easy' type='button' onclick='modbutton(this)'>Easy</button>
+        <button id='medium' type='button' onclick='modbutton(this)'>Medium</button>
+        <button id='hard' type='button' onclick='modbutton(this)'>Hard</button>
+      </div>
 
       <ul>
         <li id=nineselected style='color:red'> Select 9 numbers</li>
@@ -201,9 +207,12 @@
 
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
-      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & distinct(cell(X,Y), cell(6,4))==> click1(X,Y) & ~click3(X,Y)
-      click(cell(X,Y)) & click1(X,Y) & distinct(cell(X,Y), cell(6,4)) ==> click2(X,Y) & ~click1(X,Y)
-      click(cell(X,Y)) & click2(X,Y) & distinct(cell(X,Y), cell(6,4)) ==> click3(X,Y) & ~click2(X,Y)
+      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y)
+      click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y)
+      click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y)
+      
+      click2(X,Y) :- given(X,Y,Z) & version(Z)
+      fixed(X, Y) :- given(X,Y,Z) & version(Z)
 
       style(cell(X,Y), background, red) :- click1(X,Y)
       style(cell(X,Y), color, red) :- click1(X,Y)
@@ -211,6 +220,11 @@
       style(cell(X,Y), color, black) :- click2(X,Y)
       style(cell(X,Y), background, white) :- click3(X,Y)
 
+      click(easy) ==> version(easy) & ~version(medium) & ~version(hard)
+      click(medium) ==> version(medium) & ~version(easy) & ~version(hard)
+      click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
+      
+      square(X, Y, W) :- squarelevel(X, Y, W, Z) & version(Z)
       innerhtml(cell(X,Y), W) :- square(X,Y,W)
 
       ninetotal :- evaluate(countofall(cell(X,Y), click2(X,Y)), 9)
