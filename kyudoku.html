@@ -270,11 +270,11 @@
       click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
       click(hard) & click2(X,Y) ==> version(hard) & ~version(easy) & ~version(medium) & ~click2(X,Y) & click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
 
-      style(easy, color, green) :- version(easy)
+      style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
-      style(medium, color, green) :- version(medium)
+      style(medium, color, blue) :- version(medium)
       style(medium, color, black) :- ~version(medium)
-      style(hard, color, green) :- version(hard)
+      style(hard, color, blue) :- version(hard)
       style(hard, color, black) :- ~version(hard)
 
       square(X, Y, W) :- squarelevel(X, Y, W, Z) & version(Z)
