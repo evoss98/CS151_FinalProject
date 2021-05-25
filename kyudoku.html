@@ -211,13 +211,14 @@
       click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y)
       click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y)
       
-      click2(X,Y) :- given(X,Y,Z) & version(Z)
       fixed(X, Y) :- given(X,Y,Z) & version(Z)
 
       style(cell(X,Y), background, red) :- click1(X,Y)
       style(cell(X,Y), color, red) :- click1(X,Y)
       style(cell(X,Y), background, yellow) :- click2(X,Y)
       style(cell(X,Y), color, black) :- click2(X,Y)
+      style(cell(X,Y), background, yellow) :- fixed(X,Y)
+      style(cell(X,Y), color, black) :- fixed(X,Y)
       style(cell(X,Y), background, white) :- click3(X,Y)
 
       click(easy) :: version(easy) & ~version(medium) & ~version(hard)
