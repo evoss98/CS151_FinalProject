@@ -5,6 +5,7 @@ This project creates the game of Kyudoku using logic programming.
 The puzzle is a 6x6 grid of numbers that range from 1 to 9. There is one number selected to start (in yellow).
 
 How to Play:
+- Select the level you want to try (easy, medium, or hard)
 - Choose the numbers so the sum in every row or column is 9 or less:
     - Click once on a number to remove from the grid. This will turn the whole square red.
     - Click twice to select the number as part of your solution. This will turn the background of the square yellow.
