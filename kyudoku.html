@@ -295,6 +295,7 @@
       click(hard) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
 
       click(hint) & ~hints(0) & hints(Y) & precede(X, Y) ==> ~hints(Y) & hints(X)
+      click(hint) & easyhint & nextHint(X, Y, Z) ==> fixed(X, Y)
 
       style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
@@ -363,8 +364,8 @@
       hardHintAvailable(X, Y, Z) :- square(X, Y, Z) & available2(X, Y, Z) & evaluate(countofall(cell(OX, OY), available2(OX, OY, Z)), 1)
 
       hardHint(X, Y, Z) :- ~easyHint & hardHintAvailable(X, Y, Z) & evaluate(countofall(Q, hardHintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
-      hardHint :- easyHint
-      hardHint :- hardHint(X, Y, Z)
+      hardHintThere :- easyHint
+      hardHintThere :- hardHint(X, Y, Z)
 
       notClobbered(N, X, Y) :- available2(OX, OY, N) & distinct(OX, X) & distinct(OY, Y)
       clobbered(N, X, Y) :- square(X, Y, W) & distinct(N, W) &  ~notClobbered(N, X, Y)
