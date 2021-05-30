@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://epilog.stanford.edu/javascript/epilog.js"></script>
+    <script type="text/javascript" src="http://worksheets.stanford.edu/javascript/worksheets.js"></script>
+    
+    <title>Kyudoku</title>
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style type="text/css">
+
+      table {
+        border: 2px solid #000000;
+        text-align: center;
+      }
+
+      td {
+        border: 1px solid #000000;
+        text-align: center;
+        vertical-align: middle;  
+        font-size: 24px;
+        width: 48px;
+        height: 48px;
+        background: white;
+      }
+
+      input {
+        padding: 0;
+        border: 0;
+        text-align: center;
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        outline: none;
+      }
+
+      
+
+    </style>
+  </head>
+  <body onload='initialize()'>
+
+    <div class="container">
+      
+      <h1>Kyudoku</h1>
+
+      <table id="grid">
+
+        <tr>
+          <td id="cell(1,1)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(1,2)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(1,3)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(1,4)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(1,5)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(1,6)" onclick='modbutton(this)'>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td id="cell(2,1)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2,2)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2,3)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2,4)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2,5)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2,6)" onclick='modbutton(this)'>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td id="cell(3,1)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3,2)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3,3)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3,4)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3,5)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3,6)" onclick='modbutton(this)'>&nbsp;</td>
+        </tr>
+  
+        <tr>
+          <td id="cell(4,1)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4,2)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4,3)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4,4)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4,5)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4,6)" onclick='modbutton(this)'>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td id="cell(5,1)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5,2)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5,3)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5,4)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5,5)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5,6)" onclick='modbutton(this)'>&nbsp;</td>
+        </tr>
+  
+        <tr>
+          <td id="cell(6,1)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6,2)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6,3)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6,4)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6,5)" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6,6)" onclick='modbutton(this)'>&nbsp;</td>
+        </tr>
+      </table>
+      
+      <div style='display: flex; flex-direction: row; margin: 10px;'>
+        <button id='easy' type='button' onclick='modbutton(this)' style='color:black;'>Easy</button>
+        <button id='medium' type='button' onclick='modbutton(this)'>Medium</button>
+        <button id='hard' type='button' onclick='modbutton(this)'>Hard</button>
+        <button id='hint' type='button' onclick='modbutton(this)'>Hint</button>
+      </div>
+
+      <ul>
+        <li id=nineselected style='color:red'> Select 9 numbers</li>
+        <li id=unique style='color:red'> All numbers selected are unique</li>
+        <li id=lessthan9row style='color:red'> All row sums are less than or equal to 9</li>
+        <li id=lessthan9col style='color:red'> All column sums are less than or equal to 9</li>
+      </ul>
+
+      <p>
+        <b id=hintsremaining style='color:blue'> </b>
+      </p>
+      
+      <p>
+        <b id=test style='color:blue'> </b>
+      </p>
+
+      <h1 id=winner style='visibility:hidden' >You found a winning solution!</h1>
+    </div>
+    <textarea id='lambda' type='text/hrf' style='display:none'>
+      given(6,4,easy)
+      squarelevel(1,1,1,easy)
+      squarelevel(1,2,6,easy)
+      squarelevel(1,3,5,easy)
+      squarelevel(1,4,9,easy)
+      squarelevel(1,5,2,easy)
+      squarelevel(1,6,2,easy)
+      squarelevel(2,1,1,easy)
+      squarelevel(2,2,3,easy)
+      squarelevel(2,3,9,easy)
+      squarelevel(2,4,6,easy)
+      squarelevel(2,5,2,easy)
+      squarelevel(2,6,7,easy)
+      squarelevel(3,1,9,easy)
+      squarelevel(3,2,4,easy)
+      squarelevel(3,3,9,easy)
+      squarelevel(3,4,4,easy)
+      squarelevel(3,5,5,easy)
+      squarelevel(3,6,9,easy)
+      squarelevel(4,1,4,easy)
+      squarelevel(4,2,2,easy)
+      squarelevel(4,3,8,easy)
+      squarelevel(4,4,2,easy)
+      squarelevel(4,5,9,easy)
+      squarelevel(4,6,8,easy)
+      squarelevel(5,1,9,easy)
+      squarelevel(5,2,4,easy)
+      squarelevel(5,3,1,easy)
+      squarelevel(5,4,4,easy)
+      squarelevel(5,5,9,easy)
+      squarelevel(5,6,3,easy)
+      squarelevel(6,1,1,easy)
+      squarelevel(6,2,1,easy)
+      squarelevel(6,3,4,easy)
+      squarelevel(6,4,1,easy)
+      squarelevel(6,5,3,easy)
+      squarelevel(6,6,8,easy)
+
+      given(5, 1, medium)
+      squarelevel(1,1,7,medium)
+      squarelevel(1,2,2,medium)
+      squarelevel(1,3,6,medium)
+      squarelevel(1,4,4,medium)
+      squarelevel(1,5,7,medium)
+      squarelevel(1,6,2,medium)
+      squarelevel(2,1,7,medium)
+      squarelevel(2,2,4,medium)
+      squarelevel(2,3,8,medium)
+      squarelevel(2,4,5,medium)
+      squarelevel(2,5,1,medium)
+      squarelevel(2,6,9,medium)
+      squarelevel(3,1,4,medium)
+      squarelevel(3,2,4,medium)
+      squarelevel(3,3,3,medium)
+      squarelevel(3,4,5,medium)
+      squarelevel(3,5,3,medium)
+      squarelevel(3,6,3,medium)
+      squarelevel(4,1,6,medium)
+      squarelevel(4,2,8,medium)
+      squarelevel(4,3,3,medium)
+      squarelevel(4,4,5,medium)
+      squarelevel(4,5,8,medium)
+      squarelevel(4,6,8,medium)
+      squarelevel(5,1,6,medium)
+      squarelevel(5,2,4,medium)
+      squarelevel(5,3,1,medium)
+      squarelevel(5,4,1,medium)
+      squarelevel(5,5,5,medium)
+      squarelevel(5,6,2,medium)
+      squarelevel(6,1,3,medium)
+      squarelevel(6,2,7,medium)
+      squarelevel(6,3,6,medium)
+      squarelevel(6,4,6,medium)
+      squarelevel(6,5,8,medium)
+      squarelevel(6,6,4,medium)
+
+      given(2, 2, hard)
+      squarelevel(1,1,9,hard)
+      squarelevel(1,2,7,hard)
+      squarelevel(1,3,2,hard)
+      squarelevel(1,4,8,hard)
+      squarelevel(1,5,4,hard)
+      squarelevel(1,6,6,hard)
+      squarelevel(2,1,4,hard)
+      squarelevel(2,2,3,hard)
+      squarelevel(2,3,7,hard)
+      squarelevel(2,4,3,hard)
+      squarelevel(2,5,9,hard)
+      squarelevel(2,6,7,hard)
+      squarelevel(3,1,2,hard)
+      squarelevel(3,2,5,hard)
+      squarelevel(3,3,3,hard)
+      squarelevel(3,4,7,hard)
+      squarelevel(3,5,6,hard)
+      squarelevel(3,6,5,hard)
+      squarelevel(4,1,5,hard)
+      squarelevel(4,2,1,hard)
+      squarelevel(4,3,3,hard)
+      squarelevel(4,4,6,hard)
+      squarelevel(4,5,4,hard)
+      squarelevel(4,6,8,hard)
+      squarelevel(5,1,3,hard)
+      squarelevel(5,2,6,hard)
+      squarelevel(5,3,8,hard)
+      squarelevel(5,4,8,hard)
+      squarelevel(5,5,6,hard)
+      squarelevel(5,6,9,hard)
+      squarelevel(6,1,3,hard)
+      squarelevel(6,2,1,hard)
+      squarelevel(6,3,7,hard)
+      squarelevel(6,4,9,hard)
+      squarelevel(6,5,2,hard)
+      squarelevel(6,6,8,hard)
+
+      correctlevel(6,4,1, easy)
+      correctlevel(1,6,2, easy)
+      correctlevel(6,5,3, easy)
+      correctlevel(3,4,4, easy)
+      correctlevel(3,5,5, easy)
+      correctlevel(1,2,6, easy)
+      correctlevel(2,6,7, easy)
+      correctlevel(4,3,8, easy)
+      correctlevel(5,1,9, easy)
+
+    </textarea>
+    <textarea id='library' type='text/hrf' style='display:none'>
+      precede(0, 1)
+      precede(1, 2)
+      precede(2, 3)
+
+      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y)
+      click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y)
+      click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y)
+
+      hintsstring(W, Z) :- evaluate(stringappend("Hints remaining: ", W), Z)
+
+      fixed(X, Y) :- given(X,Y,Z) & version(Z)
+      chosen(X, Y) :- fixed(X, Y)
+      chosen(X, Y) :- click2(X, Y)
+
+      style(cell(X,Y), background, red) :- click1(X,Y)
+      style(cell(X,Y), color, red) :- click1(X,Y)
+      style(cell(X,Y), background, yellow) :- click2(X,Y)
+      style(cell(X,Y), color, black) :- click2(X,Y)
+      style(cell(X,Y), background, white) :- click3(X,Y)
+      style(cell(X,Y), color, black) :- click3(X,Y)
+      style(cell(X,Y), background, yellow) :- fixed(X,Y)
+      style(cell(X,Y), color, black) :- fixed(X,Y)
+
+      click(easy) ==> version(easy) & ~version(medium) & ~version(hard)
+      click(easy) & click2(X,Y) ==>  ~click2(X,Y) & click3(X,Y)
+      click(easy) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
+      click(easy) & fixed(X,Y) ==> click3(X,Y) & ~fixed(X,Y) & ~chosen(X, Y)
+      click(easy) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+      innerhtml(hintsremaining, Z) :- hints(W) & hintsstring(W, Z)
+
+      click(medium) ==> version(medium) & ~version(easy) & ~version(hard) 
+      click(medium) & click2(X,Y) ==> ~click2(X,Y) & click3(X,Y)
+      click(medium) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
+      click(medium) & fixed(X,Y) ==> click3(X,Y) & ~fixed(X,Y) & ~chosen(X, Y)
+      click(medium) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+
+      click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
+      click(hard) & click2(X,Y) ==>  ~click2(X,Y) & click3(X,Y)
+      click(hard) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
+      click(hard) & fixed(X,Y) ==> click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
+      click(hard) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+
+      click(hint) & ~hints(0) & hints(Y) & precede(X, Y) ==> ~hints(Y) & hints(X)
+      click(hint) & easyhint & nextHint(X, Y, Z) ==> fixed(X, Y)
+      click(hint) & easyhint & nextHint(X, Y, Z) ==> testtrue
+      
+      innerhtml(test, "Nothing here") :- ~testtrue
+      innerhtml(test, "It worked") :- testtrue
+
+      style(easy, color, blue) :- version(easy)
+      style(easy, color, black) :- ~version(easy)
+      style(medium, color, blue) :- version(medium)
+      style(medium, color, black) :- ~version(medium)
+      style(hard, color, blue) :- version(hard)
+      style(hard, color, black) :- ~version(hard)
+
+      square(X, Y, W) :- squarelevel(X, Y, W, Z) & version(Z)
+      correct(X, Y, W) :- correctlevel(X, Y, W, Z) & version(Z)
+      innerhtml(cell(X,Y), W) :- square(X,Y,W)
+
+      ninetotal :- evaluate(countofall(cell(X,Y), chosen(X,Y)), 9)
+      allunique :- evaluate(length(setofall(W, square(X,Y,W) & chosen(X, Y))), R1) & evaluate(countofall(cell(X, Y), chosen(X,Y)), R2) & same(R1, R2)
+
+      style(nineselected, color, green) :- ninetotal
+      style(nineselected, color, red) :- ~ninetotal
+      style(unique, color, green) :- allunique
+      style(unique, color, red) :- ~allunique
+
+      row(R) :- evaluate(max(sum(setofall(W, square(R, Y, W) & chosen(R,Y))),9), 9)
+
+      col(C) :- evaluate(max(sum(setofall(W, square(X, C, W) & chosen(X, C))),9), 9)
+
+      allrows :- row(1) & row(2) & row(3) & row(4) & row(5) & row(6)
+      allcols :- col(1) & col(2) & col(3) & col(4) & col(5) & col(6)
+
+      style(lessthan9row, color, green) :- allrows
+      style(lessthan9row, color, red) :- ~allrows
+      style(lessthan9col, color, green) :- allcols
+      style(lessthan9col, color, red) :- ~allcols
+
+      allsatisfied :- allrows & allcols & ninetotal & allunique
+      style(winner, visibility, visible) :- allsatisfied
+      style(winner, visibility, hidden) :- ~allsatisfied
+
+      identified(X, Y, Z) :- chosen(X, Y) & correct(X, Y, Z)
+      clicked(Z) :- square(X, Y, Z) & chosen(X, Y)
+
+      currRowSum(R, S) :- evaluate(sum(setofall(N, identified(R, Y, N))), S)
+      currColSum(C, S) :- evaluate(sum(setofall(N, identified(X, C, N))), S)
+
+      unavailable(X, Y, Z) :- square(X, Y, Z) & currRowSum(X, S) & evaluate(min(plus(S, Z), 10), 10)
+      unavailable(X, Y, Z) :- square(X, Y, Z) & currColSum(Y, S) & evaluate(min(plus(S, Z), 10), 10)
+      available(X, Y, Z) :- square(X, Y, Z) & ~clicked(Z) & ~unavailable(X, Y, Z)
+
+      hintAvailable(X, Y, Z) :- square(X, Y, Z) & available(X, Y, Z) & evaluate(countofall(cell(OX, OY), available(OX, OY, Z)), 1)
+
+      nextHint(X, Y, Z) :- hintAvailable(X, Y, Z) & evaluate(countofall(Q, hintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
+      easyHint :- nextHint(X, Y, Z)
+
+      canBeInRow(R, N) :- available(R, Y, N)
+      canBeInCol(C, N) :- available(X, C, N)
+      forcedRow(R, N) :- canBeInRow(R, N) & evaluate(countofall(OR, canBeInRow(OR, N)), 1)
+      forcedCol(R, N) :- canBeInCol(C, N) & evaluate(countofall(OC, canBeInCol(OC, N)), 1)
+
+      forcedRowSum(R, S) :- evaluate(sum(setofall(N, forcedRow(R,N))), S)
+      forcedColSum(C, S) :- evaluate(sum(setofall(N, forcedCol(C,N))), S)
+      totalRowSum(R, S) :- currRowSum(R, OS) & forcedRowSum(R, SS) & evaluate(plus(OS, SS), S)
+      totalColSum(C, S) :- currColSum(C, OS) & forcedColSum(R, SS) & evaluate(plus(OS, SS), S)
+      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalRowSum(X, S) & ~forcedRow(X, Z) & evaluate(min(plus(S, Z), 10), 10)
+      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalColSum(Y, S) & ~forcedCol(Y, Z) & evaluate(min(plus(S, Z), 10), 10)
+
+      available2(X, Y, Z) :- available(X, Y, Z) & ~forcedUnavailable(X, Y, Z)
+
+      hardHintAvailable(X, Y, Z) :- square(X, Y, Z) & available2(X, Y, Z) & evaluate(countofall(cell(OX, OY), available2(OX, OY, Z)), 1)
+
+      hardHint(X, Y, Z) :- ~easyHint & hardHintAvailable(X, Y, Z) & evaluate(countofall(Q, hardHintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
+      hardHintThere :- easyHint
+      hardHintThere :- hardHint(X, Y, Z)
+
+      notClobbered(N, X, Y) :- available2(OX, OY, N) & distinct(OX, X) & distinct(OY, Y)
+      clobbered(N, X, Y) :- square(X, Y, W) & distinct(N, W) &  ~notClobbered(N, X, Y)
+      clobberedUnavailable(X, Y, Z) :- square(X, Y, Z) & clobbered(N, X, Y) & evaluate(min(plus(N, Z), 10), 10)
+
+      available3(X, Y, Z) :- available2(X, Y, Z) & ~clobberedUnavailable(X, Y, Z)
+
+    </textarea>
+
+  </body>
+</html>
