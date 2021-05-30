@@ -252,6 +252,10 @@
 
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
+      precede(0, 1)
+      precede(1, 2)
+      precede(2, 3)
+
       click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y)
       click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y)
       click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y)
@@ -289,6 +293,8 @@
       click(hard) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(hard) & fixed(X,Y) ==> click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
       click(hard) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+
+      click(hint) & ~hints(0) & hints(Y) & precede(X, Y) ==> ~hints(Y) & hints(X)
 
       style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
