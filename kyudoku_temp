@@ -127,6 +127,10 @@
         <b id=test style='color:blue'> </b>
       </p>
 
+      <p>
+        <b id=test2 style='color:blue'> </b>
+      </p>
+
       <h1 id=winner style='visibility:hidden' >You found a winning solution!</h1>
     </div>
     <textarea id='lambda' type='text/hrf' style='display:none'>
@@ -304,6 +308,10 @@
       
       innerhtml(test, "Nothing here") :- ~testtrue
       innerhtml(test, "It worked") :- testtrue
+
+      innerhtml(test2, W) :- easyHint & nextHint(X, Y, Z) & teststring(X, Y, Z, W)
+
+      teststring(X, Y, Z, W) :- evaluate(stringappend(X, " ", Y, " ", Z), W)
 
       style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
