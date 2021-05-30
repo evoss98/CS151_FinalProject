@@ -109,6 +109,7 @@
         <button id='easy' type='button' onclick='modbutton(this)' style='color:black;'>Easy</button>
         <button id='medium' type='button' onclick='modbutton(this)'>Medium</button>
         <button id='hard' type='button' onclick='modbutton(this)'>Hard</button>
+        <button id='hint' type='button' onclick='modbutton(this)'>Hint</button>
       </div>
 
       <ul>
@@ -117,6 +118,10 @@
         <li id=lessthan9row style='color:red'> All row sums are less than or equal to 9</li>
         <li id=lessthan9col style='color:red'> All column sums are less than or equal to 9</li>
       </ul>
+
+      <p>
+        <b id=hintsremaining style='color:blue'> </b>
+      </p>
 
       <h1 id=winner style='visibility:hidden' >You found a winning solution!</h1>
     </div>
@@ -250,7 +255,9 @@
       click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y)
       click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y)
       click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y)
-      
+
+      hintsstring(W, Z) :- evaluate(stringappend("Hints remaining: ", W), Z)
+
       fixed(X, Y) :- given(X,Y,Z) & version(Z)
       chosen(X, Y) :- fixed(X, Y)
       chosen(X, Y) :- click2(X, Y)
@@ -268,17 +275,21 @@
       click(easy) & click2(X,Y) ==>  ~click2(X,Y) & click3(X,Y)
       click(easy) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(easy) & fixed(X,Y) ==> click3(X,Y) & ~fixed(X,Y) & ~chosen(X, Y)
+      click(easy) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+      innerhtml(hintsremaining, Z) :- hints(W) & hintsstring(W, Z)
 
       click(medium) ==> version(medium) & ~version(easy) & ~version(hard) 
       click(medium) & click2(X,Y) ==> ~click2(X,Y) & click3(X,Y)
       click(medium) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(medium) & fixed(X,Y) ==> click3(X,Y) & ~fixed(X,Y) & ~chosen(X, Y)
+      click(medium) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
 
       click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
       click(hard) & click2(X,Y) ==>  ~click2(X,Y) & click3(X,Y)
       click(hard) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(hard) & fixed(X,Y) ==> click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
-      
+      click(hard) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+
       style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
       style(medium, color, blue) :- version(medium)
