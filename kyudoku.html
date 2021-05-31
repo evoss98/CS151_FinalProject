@@ -122,6 +122,10 @@
       <p>
         <b id=hintsremaining style='color:blue'> </b>
       </p>
+      
+      <p>
+        <b id=nexthint style='color:blue'> </b>
+      </p>
 
       <h1 id=winner style='visibility:hidden' >You found a winning solution!</h1>
     </div>
@@ -256,9 +260,9 @@
       precede(1, 2)
       precede(2, 3)
 
-      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y)
-      click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y)
-      click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y)
+      click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y) & ~hinttrue
+      click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y) & ~hinttrue
+      click(cell(X,Y)) & click2(X,Y) & ~fixed(X, Y) ==> click3(X,Y) & ~click2(X,Y) & ~hinttrue
 
       hintsstring(W, Z) :- evaluate(stringappend("Hints remaining: ", W), Z)
 
@@ -280,22 +284,30 @@
       click(easy) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(easy) & fixed(X,Y) ==> click3(X,Y) & ~fixed(X,Y) & ~chosen(X, Y)
       click(easy) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
-      innerhtml(hintsremaining, Z) :- hints(W) & hintsstring(W, Z)
+      click(easy) ==> refresh
 
       click(medium) ==> version(medium) & ~version(easy) & ~version(hard) 
       click(medium) & click2(X,Y) ==> ~click2(X,Y) & click3(X,Y)
       click(medium) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(medium) & fixed(X,Y) ==> click3(X,Y) & ~fixed(X,Y) & ~chosen(X, Y)
       click(medium) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
-
+      click(medium) ==> refresh
+      
       click(hard) ==> version(hard) & ~version(easy) & ~version(medium)
       click(hard) & click2(X,Y) ==>  ~click2(X,Y) & click3(X,Y)
       click(hard) & click1(X,Y) ==>  ~click1(X,Y) & click3(X,Y)
       click(hard) & fixed(X,Y) ==> click3(X,Y)& ~fixed(X,Y) & ~chosen(X, Y)
       click(hard) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
+      click(hard) ==> refresh
 
       click(hint) & ~hints(0) & hints(Y) & precede(X, Y) ==> ~hints(Y) & hints(X)
-      click(hint) & easyhint & nextHint(X, Y, Z) ==> fixed(X, Y)
+      click(hint) & nextHint(X, Y, Z) & ~hints(0) ==> hinttrue & ~refresh
+      
+      innerhtml(hintsremaining, Z) :- hints(W) & hintsstring(W, Z)
+      innerhtml(nexthint, W) :- hinttrue & nextHint(X, Y, Z) & teststring(X, Y, W)
+      innerhtml(nexthint, " ") :- refresh
+
+      teststring(X, Y, Z) :- evaluate(stringappend("Hint : click square ", X, ", ", Y), Z)
 
       style(easy, color, blue) :- version(easy)
       style(easy, color, black) :- ~version(easy)
