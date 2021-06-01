@@ -274,11 +274,13 @@
       correctlevel(1,4,8, hard)
       correctlevel(5,6,9, hard)
 
-    </textarea>
-    <textarea id='library' type='text/hrf' style='display:none'>
       precede(0, 1)
       precede(1, 2)
       precede(2, 3)
+      
+    </textarea>
+    <textarea id='library' type='text/hrf' style='display:none'>
+      
 
       click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y) & ~hinttrue
       click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y) & ~hinttrue
