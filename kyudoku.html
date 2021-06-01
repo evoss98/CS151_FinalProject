@@ -253,26 +253,26 @@
       correctlevel(2,6,7, easy)
       correctlevel(4,3,8, easy)
       correctlevel(5,1,9, easy)
-      
-      correctlevel(5,3,1,medium)
-      correctlevel(1,2,2,medium)
-      correctlevel(3,3,3,medium)
-      correctlevel(1,4,4,medium)
-      correctlevel(3,4,5,medium)
-      correctlevel(5,1,6,medium)
-      correctlevel(6,2,7,medium)
-      correctlevel(4,5,8,medium)
-      correctlevel(2,6,9,medium)
-      
-      digit(1)
-      digit(2)
-      digit(3)
-      digit(4)
-      digit(5)
-      digit(6)
-      digit(7)
-      digit(8)
-      digit(9)
+
+      correctlevel(5,3,1, medium)
+      correctlevel(1,2,2, medium)
+      correctlevel(3,3,3, medium)
+      correctlevel(1,4,4, medium)
+      correctlevel(3,4,5, medium)
+      correctlevel(5,1,6, medium)
+      correctlevel(6,2,7, medium)
+      correctlevel(4,5,8, medium)
+      correctlevel(2,6,9, medium)
+
+      correctlevel(4,2,1, hard)
+      correctlevel(6,5,2, hard)
+      correctlevel(2,2,3, hard)
+      correctlevel(2,1,4, hard)
+      correctlevel(4,1,5, hard)
+      correctlevel(3,5,6, hard)
+      correctlevel(6,3,7, hard)
+      correctlevel(1,4,8, hard)
+      correctlevel(5,6,9, hard)
 
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
@@ -320,7 +320,7 @@
       click(hard) ==> hints(3) & ~hints(2) & ~hints(1) & ~hints(0)
       click(hard) ==> refresh
 
-      click(hint) & ~hints(0) & hints(Y) & precede(X, Y) ==> ~hints(Y) & hints(X)
+      click(hint) & easyHint & ~hints(0) & hints(Y) & precede(X, Y) ==> ~hints(Y) & hints(X)
       click(hint) & nextHint(X, Y, Z) & ~hints(0) ==> hinttrue & ~refresh
       
       innerhtml(hintsremaining, Z) :- hints(W) & hintsstring(W, Z)
@@ -379,31 +379,12 @@
       nextHint(X, Y, Z) :- hintAvailable(X, Y, Z) & evaluate(countofall(Q, hintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
       easyHint :- nextHint(X, Y, Z)
 
-      canBeInRow(R, N) :- available(R, Y, N)
-      canBeInCol(C, N) :- available(X, C, N)
-      forcedRow(R, N) :- canBeInRow(R, N) & evaluate(countofall(OR, canBeInRow(OR, N)), 1)
-      forcedCol(R, N) :- canBeInCol(C, N) & evaluate(countofall(OC, canBeInCol(OC, N)), 1)
+      notClobbered(N, X, Y) :- available(OX, OY, N) & distinct(OX, X) & distinct(OY, Y)
+      clobbered(X, Y) :- available(X, Y, W) & digit(N) & ~clicked(N) & distinct(N, W) &  ~notClobbered(N, X, Y) & evaluate(min(plus(N, W), 10), 10)
 
-      forcedRowSum(R, S) :- evaluate(sum(setofall(N, forcedRow(R,N))), S)
-      forcedColSum(C, S) :- evaluate(sum(setofall(N, forcedCol(C,N))), S)
-      totalRowSum(R, S) :- currRowSum(R, OS) & forcedRowSum(R, SS) & evaluate(plus(OS, SS), S)
-      totalColSum(C, S) :- currColSum(C, OS) & forcedColSum(R, SS) & evaluate(plus(OS, SS), S)
-      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalRowSum(X, S) & ~forcedRow(X, Z) & evaluate(min(plus(S, Z), 10), 10)
-      forcedUnavailable(X, Y, Z) :- square(X, Y, Z) & totalColSum(Y, S) & ~forcedCol(Y, Z) & evaluate(min(plus(S, Z), 10), 10)
+      available2(X, Y, Z) :- available(X, Y, Z) & ~clobbered(X, Y)
 
-      available2(X, Y, Z) :- available(X, Y, Z) & ~forcedUnavailable(X, Y, Z)
-
-      hardHintAvailable(X, Y, Z) :- square(X, Y, Z) & available2(X, Y, Z) & evaluate(countofall(cell(OX, OY), available2(OX, OY, Z)), 1)
-
-      hardHint(X, Y, Z) :- ~easyHint & hardHintAvailable(X, Y, Z) & evaluate(countofall(Q, hardHintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
-      hardHintThere :- easyHint
-      hardHintThere :- hardHint(X, Y, Z)
-
-      notClobbered(N, X, Y) :- available2(OX, OY, N) & distinct(OX, X) & distinct(OY, Y)
-      clobbered(N, X, Y) :- square(X, Y, W) & distinct(N, W) &  ~notClobbered(N, X, Y)
-      clobberedUnavailable(X, Y, Z) :- square(X, Y, Z) & clobbered(N, X, Y) & evaluate(min(plus(N, Z), 10), 10)
-
-      available3(X, Y, Z) :- available2(X, Y, Z) & ~clobberedUnavailable(X, Y, Z)
+      hardHint(X, Y, Z) :- available2(X, Y, Z) & evaluate(countofall(cell(OX, OY), available2(OX, OY, Z)), 1)
 
     </textarea>
 
