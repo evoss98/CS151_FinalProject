@@ -274,13 +274,22 @@
       correctlevel(1,4,8, hard)
       correctlevel(5,6,9, hard)
 
+      digit(1)
+      digit(2)
+      digit(3)
+      digit(4)
+      digit(5)
+      digit(6)
+      digit(7)
+      digit(8)
+      digit(9)
+
       precede(0, 1)
       precede(1, 2)
       precede(2, 3)
-      
+
     </textarea>
     <textarea id='library' type='text/hrf' style='display:none'>
-      
 
       click(cell(X,Y)) & ~click1(X,Y) & ~click2(X,Y) & ~fixed(X, Y) ==> click1(X,Y) & ~click3(X,Y) & ~hinttrue
       click(cell(X,Y)) & click1(X,Y) & ~fixed(X, Y) ==> click2(X,Y) & ~click1(X,Y) & ~hinttrue
@@ -367,27 +376,31 @@
       style(winner, visibility, hidden) :- ~allsatisfied
 
       identified(X, Y, Z) :- chosen(X, Y) & correct(X, Y, Z)
-      clicked(Z) :- square(X, Y, Z) & chosen(X, Y)
+      clicked(Z) :- identified(X, Y, Z)
 
-      currRowSum(R, S) :- evaluate(sum(setofall(N, identified(R, Y, N))), S)
-      currColSum(C, S) :- evaluate(sum(setofall(N, identified(X, C, N))), S)
-
-      unavailable(X, Y, Z) :- square(X, Y, Z) & currRowSum(X, S) & evaluate(min(plus(S, Z), 10), 10)
-      unavailable(X, Y, Z) :- square(X, Y, Z) & currColSum(Y, S) & evaluate(min(plus(S, Z), 10), 10)
-      available(X, Y, Z) :- square(X, Y, Z) & ~clicked(Z) & ~unavailable(X, Y, Z)
+      unavailable(X, Y, Z) :- square(X, Y, Z) & evaluate(sum(setofall(N, identified(R, Y, N))), S) & evaluate(min(plus(S, Z), 10), 10)
+      unavailable(X, Y, Z) :- square(X, Y, Z) & evaluate(sum(setofall(N, identified(X, C, N))), S) & evaluate(min(plus(S, Z), 10), 10)
+      unavailable(X, Y, Z) :- clicked(Z)
+      available(X, Y, Z) :- square(X, Y, Z) & ~unavailable(X, Y, Z)
 
       hintAvailable(X, Y, Z) :- square(X, Y, Z) & available(X, Y, Z) & evaluate(countofall(cell(OX, OY), available(OX, OY, Z)), 1)
 
       nextHint(X, Y, Z) :- hintAvailable(X, Y, Z) & evaluate(countofall(Q, hintAvailable(OX, OY, Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q)), 0)
       easyHint :- nextHint(X, Y, Z)
 
+      notClobbered(N, X, Y) :- clicked(N)
       notClobbered(N, X, Y) :- available(OX, OY, N) & distinct(OX, X) & distinct(OY, Y)
-      clobbered(X, Y) :- available(X, Y, W) & digit(N) & ~clicked(N) & distinct(N, W) &  ~notClobbered(N, X, Y) & evaluate(min(plus(N, W), 10), 10)
+      clobbered(X, Y, W) :- square(X, Y, W) & digit(N) &  evaluate(min(plus(N, W), 10), 10) & distinct(N, W) &  ~notClobbered(N, X, Y)
 
-      available2(X, Y, Z) :- available(X, Y, Z) & ~clobbered(X, Y)
+      available2(X, Y, Z) :- available(X, Y, Z) & ~clobbered(X, Y, Z)
 
-      hardHint(X, Y, Z) :- available2(X, Y, Z) & evaluate(countofall(cell(OX, OY), available2(OX, OY, Z)), 1)
+      multiple2(X, Y, Z) :- available2(OX, OY, Z) & distinct(cell(X, Y), cell(OX, OY))
 
+      hardHint(X, Y, Z) :- available2(X, Y, Z) & ~multiple2(X, Y, Z)
+
+      bigger(Z) :- digit(Q) & distinct(Z, Q) & evaluate(min(Z, Q), Q) & hardHint(OX, OY, Q)
+
+      nextHardHint(X, Y, Z) :- hardHint(X, Y, Z) & ~bigger(Z)
     </textarea>
 
   </body>
